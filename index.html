@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+<h2>สร้าง QR Code (free)</h2>
+<h4>by:bob_rootniip3000(Dissord)</h4>
+
+<input type="text" id="link" placeholder="ใส่ลิงก์">
+<br><br>
+<input type="file" id="logoInput" accept="image/*">
+<br><br>
+<button onclick="generateQR()">สร้าง QR</button>
+<br><br>
+<canvas id="canvas" width="256" height="256"></canvas>
+<br><br>
+<button onclick="downloadQR()">ดาวน์โหลด</button>
+
+<script>
+function generateQR() {
+  const link = document.getElementById("link").value;
+  const tempDiv = document.createElement("div");
+
+  new QRCode(tempDiv, {
+    text: link,
+    width: 256,
+    height: 256,
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  setTimeout(() => {
+    const qrImg = tempDiv.querySelector("img");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const baseImage = new Image();
+    baseImage.src = qrImg.src;
+
+    baseImage.onload = function() {
+      ctx.clearRect(0,0,256,256);
+      ctx.drawImage(baseImage, 0, 0, 256, 256);
+
+      const file = document.getElementById("logoInput").files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const logo = new Image();
+          logo.src = e.target.result;
+
+          logo.onload = function() {
+            const size = 60;
+            const x = (256 - size) / 2;
+            const y = (256 - size) / 2;
+            ctx.drawImage(logo, x, y, size, size);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+  }, 300);
+}
+
+function downloadQR() {
+  const canvas = document.getElementById("canvas");
+  const link = document.createElement("a");
+  link.download = "qr.png";
+  link.href = canvas.toDataURL();
+  link.click();
+}
+</script>
+
+</body>
+</html>
