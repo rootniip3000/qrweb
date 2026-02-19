@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    #qr-wrapper {
+      position: relative;
+      width: 256px;
+      height: 256px;
+      margin-top: 20px;
+    }
+    #qrcode {
+      width: 256px;
+      height: 256px;
+    }
+    #logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      background: white;
+      padding: 5px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<h2>สร้าง QR Code (ใส่รูปกลาง)</h2>
+<h1>by.rootniip3000 (แก้บัคละ)</h1>
+
+<input type="text" id="link" placeholder="ใส่ลิงก์">
+<br><br>
+<input type="file" id="logoInput" accept="image/*">
+<br><br>
+<button onclick="generateQR()">สร้าง QR</button>
+
+<div id="qr-wrapper">
+  <div id="qrcode"></div>
+  <img id="logo">
+</div>
+
+<script>
+function generateQR() {
+  const qrDiv = document.getElementById("qrcode");
+  qrDiv.innerHTML = "";
+
+  const link = document.getElementById("link").value;
+
+  new QRCode(qrDiv, {
+    text: link,
+    width: 256,
+    height: 256,
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  const file = document.getElementById("logoInput").files[0];
+  const logo = document.getElementById("logo");
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      logo.src = e.target.result;
+      logo.style.display = "block";
+    }
+    reader.readAsDataURL(file);
+  } else {
+    logo.style.display = "none";
+  }
+}
+</script>
+
+</body>
+</html>
